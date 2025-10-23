@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculateur de ration pour chien</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg-gradient: radial-gradient(circle at 20% 20%, #ffdac1, rgba(255, 218, 193, 0) 55%),
+        radial-gradient(circle at 80% 30%, #ffd5ef, rgba(255, 213, 239, 0) 55%),
+        radial-gradient(circle at 50% 80%, #c9f7ff, rgba(201, 247, 255, 0) 60%),
+        linear-gradient(135deg, #121123, #191f45);
+      --card-bg: rgba(18, 17, 35, 0.65);
+      --card-border: rgba(255, 255, 255, 0.2);
+      --text-primary: #f8f9ff;
+      --text-muted: rgba(248, 249, 255, 0.75);
+      --accent: #ffb344;
+      --accent-soft: rgba(255, 179, 68, 0.3);
+      --input-bg: rgba(12, 11, 24, 0.9);
+      --shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.8);
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      backdrop-filter: blur(12px);
+    }
+
+    .card {
+      width: min(640px, 100%);
+      padding: 40px 36px;
+      border-radius: 28px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(135deg, rgba(255, 179, 68, 0.08), transparent 45%),
+        linear-gradient(315deg, rgba(89, 156, 255, 0.08), transparent 55%);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 3vw, 2.6rem);
+      letter-spacing: -0.03em;
+    }
+
+    .brand {
+      margin: 0 0 18px;
+      font-size: clamp(2.6rem, 6vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: transparent;
+      background: linear-gradient(120deg, #ffee99 0%, #ffb344 45%, #ff72e1 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      text-shadow: 0 24px 48px rgba(255, 179, 68, 0.25);
+    }
+
+    p.description {
+      margin: 0 0 32px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-size: 1rem;
+    }
+
+    .inputs {
+      display: grid;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 20px 24px;
+      border-radius: 18px;
+      background: rgba(12, 11, 24, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: transform 160ms ease-out, border-color 160ms ease-out, box-shadow 160ms ease-out;
+    }
+
+    .input-group:focus-within {
+      transform: translateY(-2px);
+      border-color: rgba(255, 179, 68, 0.7);
+      box-shadow: 0 16px 35px -28px rgba(255, 179, 68, 0.9);
+    }
+
+    .input-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: rgba(248, 249, 255, 0.78);
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .number-field {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+    }
+
+    .number-field input {
+      flex: 1;
+      font-size: 1.7rem;
+      font-weight: 600;
+      padding: 10px 56px 10px 0;
+      border: none;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.16);
+      background: transparent;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-bottom-color 160ms ease-out;
+      appearance: textfield;
+    }
+
+    .number-field input:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .number-field input::-webkit-inner-spin-button,
+    .number-field input::-webkit-outer-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    .spin-controls {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(6px);
+    }
+
+    .spin-btn {
+      width: 36px;
+      height: 28px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(12, 11, 24, 0.5);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
+      display: grid;
+      place-items: center;
+    }
+
+    .spin-btn:hover {
+      background: rgba(255, 179, 68, 0.18);
+      box-shadow: 0 6px 14px -12px rgba(255, 179, 68, 0.9);
+    }
+
+    .spin-btn:active {
+      transform: scale(0.96);
+      background: rgba(255, 179, 68, 0.28);
+    }
+
+    .spin-icon {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      position: relative;
+    }
+
+    .spin-icon::before,
+    .spin-icon::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .spin-icon.up::after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .spin-icon.down::after {
+      display: none;
+    }
+
+    .unit {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .results {
+      padding: 28px 32px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(255, 179, 68, 0.15), rgba(255, 213, 239, 0.1));
+      border: 1px solid rgba(255, 179, 68, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .results-title {
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(18, 17, 35, 0.65);
+      background: rgba(255, 179, 68, 0.9);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .result-value {
+      font-size: clamp(2.6rem, 5vw, 3.4rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: #ffffff;
+    }
+
+    .result-details {
+      color: rgba(248, 249, 255, 0.8);
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .tips {
+      margin-top: 36px;
+      padding: 20px 24px;
+      border-radius: 18px;
+      background: rgba(12, 11, 24, 0.35);
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 540px) {
+      body {
+        padding: 32px 12px;
+      }
+
+      .card {
+        padding: 32px 22px;
+      }
+
+      .input-group {
+        padding: 18px 18px;
+      }
+
+      .results {
+        padding: 24px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <header>
+      <div class="brand">My Dog Food Factory</div>
+      <h1>Plan de ration pour votre compagnon</h1>
+      <p class="description">
+        Ajustez simplement le poids de votre chien et l'énergie des croquettes. Nous calculons la portion quotidienne idéale
+        pour vous.
+      </p>
+    </header>
+
+    <section class="inputs" aria-label="Paramètres ajustables">
+      <div class="input-group">
+        <label class="input-label" for="dogWeight">
+          <span class="badge">Poids</span>
+          Poids du chien
+        </label>
+        <div class="number-field">
+          <input type="number" inputmode="decimal" min="0" step="0.1" id="dogWeight" placeholder="Ex. 12.5" />
+          <div class="spin-controls" aria-hidden="true">
+            <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter le poids">
+              <span class="spin-icon up"></span>
+            </button>
+            <button type="button" class="spin-btn" data-action="down" aria-label="Diminuer le poids">
+              <span class="spin-icon down"></span>
+            </button>
+          </div>
+        </div>
+        <span class="unit">kg</span>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="kcal100">
+          <span class="badge">Énergie</span>
+          Croquettes (kcal pour 100 g)
+        </label>
+        <div class="number-field">
+          <input type="number" inputmode="decimal" min="0" step="1" id="kcal100" placeholder="Ex. 380" />
+          <div class="spin-controls" aria-hidden="true">
+            <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter les kcal">
+              <span class="spin-icon up"></span>
+            </button>
+            <button type="button" class="spin-btn" data-action="down" aria-label="Diminuer les kcal">
+              <span class="spin-icon down"></span>
+            </button>
+          </div>
+        </div>
+        <span class="unit">kcal / 100 g</span>
+      </div>
+    </section>
+
+    <section class="results" aria-live="polite">
+      <span class="results-title">Portion quotidienne</span>
+      <div id="resultValue" class="result-value">—</div>
+      <div id="resultDetails" class="result-details">Entrez vos paramètres pour découvrir la ration sur mesure.</div>
+    </section>
+
+    <section class="tips">
+      Les données sont enregistrées sur cet appareil. Pensez à ajuster la portion à chaque changement de poids, de croquettes
+      ou de routine. Pour un suivi optimal, répartissez la ration sur plusieurs repas.
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "dogFoodCalculatorPreferences";
+      const weightInput = document.getElementById("dogWeight");
+      const kcalInput = document.getElementById("kcal100");
+      const resultValue = document.getElementById("resultValue");
+      const resultDetails = document.getElementById("resultDetails");
+
+      const formatDecimal = (value, digits = 1) =>
+        Number.isFinite(value) ? value.toLocaleString("fr-FR", { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "—";
+
+      const loadPreferences = () => {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (!saved) return;
+          const { weight, kcals } = JSON.parse(saved);
+          if (typeof weight === "number" && Number.isFinite(weight)) weightInput.value = weight;
+          if (typeof kcals === "number" && Number.isFinite(kcals)) kcalInput.value = kcals;
+        } catch (error) {
+          console.warn("Impossible de charger les préférences:", error);
+        }
+      };
+
+      const storePreferences = () => {
+        const weight = parseFloat(weightInput.value);
+        const kcals = parseFloat(kcalInput.value);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ weight, kcals }));
+        } catch (error) {
+          console.warn("Impossible de sauvegarder les préférences:", error);
+        }
+      };
+
+      const renderResult = () => {
+        const weight = parseFloat(weightInput.value);
+        const kcals = parseFloat(kcalInput.value);
+
+        if (!Number.isFinite(weight) || weight <= 0) {
+          resultValue.textContent = "—";
+          resultDetails.textContent = "Indiquez le poids de votre chien pour commencer le calcul.";
+          return;
+        }
+
+        if (!Number.isFinite(kcals) || kcals <= 0) {
+          resultValue.textContent = "—";
+          resultDetails.textContent = "Précisez le nombre de kcal pour 100 g de vos croquettes.";
+          return;
+        }
+
+        const energyRequirement = 110 * Math.pow(weight, 0.75);
+        const dailyPortionGrams = (energyRequirement / kcals) * 100;
+        const portionPerMeal = dailyPortionGrams / 2;
+
+        resultValue.textContent = `${formatDecimal(dailyPortionGrams, 0)} g`;
+        resultDetails.innerHTML = `
+          Besoin énergétique estimé&nbsp;: <strong>${formatDecimal(energyRequirement, 0)} kcal/jour</strong>.<br />
+          Répartissez idéalement en deux repas d'environ <strong>${formatDecimal(portionPerMeal, 0)} g</strong> chacun.
+        `;
+      };
+
+      const handleInput = () => {
+        storePreferences();
+        renderResult();
+      };
+
+      const attachSpinControls = (input) => {
+        const controls = input.parentElement.querySelectorAll(".spin-btn");
+        controls.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (btn.dataset.action === "up") {
+              input.stepUp();
+            } else {
+              input.stepDown();
+            }
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+          });
+        });
+      };
+
+      loadPreferences();
+      renderResult();
+
+      weightInput.addEventListener("input", handleInput);
+      kcalInput.addEventListener("input", handleInput);
+      attachSpinControls(weightInput);
+      attachSpinControls(kcalInput);
+    })();
+  </script>
+</body>
+</html>
