@@ -131,16 +131,37 @@
     }
 
     .number-field {
-      position: relative;
       display: flex;
-      align-items: stretch;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      inline-size: fit-content;
+      max-inline-size: 100%;
+      width: 100%;
+    }
+
+    .input-row {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 12px;
+      width:100%;
+    }
+
+    .input-row .unit {
+      display: inline-flex;
+      align-items: flex-end;
+      padding-bottom: 6px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
 
     .number-field input {
+      /*flex: 0 0 auto;*/
+      /*inline-size: clamp(150px, 40vw, 240px);*/
       flex: 1;
       font-size: 1.7rem;
       font-weight: 600;
-      padding: 10px 56px 10px 0;
+      padding: 10px 0;
       border: none;
       border-bottom: 2px solid rgba(255, 255, 255, 0.16);
       background: transparent;
@@ -148,6 +169,7 @@
       outline: none;
       transition: border-bottom-color 160ms ease-out;
       appearance: textfield;
+        min-width: 100px;
     }
 
     .number-field input:focus {
@@ -161,16 +183,15 @@
     }
 
     .spin-controls {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding: 4px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.08);
+      display: inline-flex;
+      align-self: flex-start;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(6px);
     }
@@ -292,10 +313,54 @@
 
       .input-group {
         padding: 18px 18px;
+        min-width: 300px;
       }
 
       .results {
         padding: 24px 24px;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .input-row {
+        gap: 12px;
+      }
+
+      .number-field input {
+        font-size: 1.5rem;
+      }
+
+      .spin-controls {
+        align-self: flex-start;
+        justify-content: center;
+      }
+
+      .spin-btn {
+        width: 42px;
+        height: 32px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      body {
+        padding: 28px 10px;
+      }
+
+      .card {
+        padding: 28px 18px;
+      }
+
+      .spin-btn {
+        width: 38px;
+        height: 30px;
+      }
+
+      .brand {
+        font-size: clamp(2.2rem, 8vw, 2.8rem);
+      }
+
+      h1 {
+        font-size: clamp(1.8rem, 6vw, 2.3rem);
       }
     }
   </style>
@@ -315,10 +380,13 @@
       <div class="input-group">
         <label class="input-label" for="dogWeight">
           <span class="badge">Poids</span>
-          Poids du chien
+          Poids du chien (kg)
         </label>
         <div class="number-field">
-          <input type="number" inputmode="decimal" min="0" step="0.1" id="dogWeight" placeholder="Ex. 12.5" />
+          <div class="input-row">
+            <input type="number" inputmode="decimal" min="0" step="0.1" id="dogWeight" placeholder="Ex. 12.5" />
+            <span class="unit">kg</span>
+          </div>
           <div class="spin-controls" aria-hidden="true">
             <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter le poids">
               <span class="spin-icon up"></span>
@@ -328,7 +396,6 @@
             </button>
           </div>
         </div>
-        <span class="unit">kg</span>
       </div>
 
       <div class="input-group">
@@ -337,7 +404,10 @@
           Croquettes (kcal pour 100 g)
         </label>
         <div class="number-field">
-          <input type="number" inputmode="decimal" min="0" step="1" id="kcal100" placeholder="Ex. 380" />
+          <div class="input-row">
+            <input type="number" inputmode="decimal" min="0" step="1" id="kcal100" placeholder="Ex. 380" />
+            <span class="unit">kcal / 100 g</span>
+          </div>
           <div class="spin-controls" aria-hidden="true">
             <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter les kcal">
               <span class="spin-icon up"></span>
@@ -347,7 +417,6 @@
             </button>
           </div>
         </div>
-        <span class="unit">kcal / 100 g</span>
       </div>
     </section>
 
@@ -429,7 +498,9 @@
       };
 
       const attachSpinControls = (input) => {
-        const controls = input.parentElement.querySelectorAll(".spin-btn");
+        const container = input.closest(".number-field");
+        if (!container) return;
+        const controls = container.querySelectorAll(".spin-btn");
         controls.forEach((btn) => {
           btn.addEventListener("click", () => {
             if (btn.dataset.action === "up") {
