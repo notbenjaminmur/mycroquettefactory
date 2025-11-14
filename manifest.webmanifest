@@ -1,0 +1,28 @@
+{
+  "name": "My Croquette Factory",
+  "short_name": "Croquette",
+  "description": "Calculez la ration idéale de votre chien et estimez l'énergie de ses croquettes.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#121123",
+  "theme_color": "#ffb344",
+  "icons": [
+    {
+      "src": "app-icon-192.jpg",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "app-icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "app-icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
