@@ -1,6 +1,6 @@
 {
   "name": "My Croquette Factory",
-  "short_name": "Croquette",
+  "short_name": "My Croquette Factory",
   "description": "Calculez la ration idéale de votre chien et estimez l'énergie de ses croquettes.",
   "start_url": "./index.html",
   "scope": "./",
