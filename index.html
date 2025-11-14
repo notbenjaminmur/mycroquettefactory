@@ -1019,6 +1019,19 @@
         const kcalSummaryTdfRow = document.getElementById("kcalSummaryTdfRow");
         const kcalSummaryTdfValue = document.getElementById("kcalSummaryTdf");
         const kcalSummaryNote = document.getElementById("kcalSummaryNote");
+        const scrollToTopInstant = () => {
+            if (typeof window.scrollTo === "function") {
+                try {
+                    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+                    return;
+                } catch (_) {
+                    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+                    return;
+                }
+            }
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        };
         const clearEnergySummary = () => {
             if (!kcalSummary) return;
             kcalSummary.hidden = true;
@@ -1152,6 +1165,7 @@
             };
 
             const openIdealWeightModal = () => {
+                scrollToTopInstant();
                 selectedNecValue = "";
                 updateNecSelection();
                 idealWeightError.textContent = "";
@@ -1296,6 +1310,7 @@
             };
 
             const openKcalCalculator = () => {
+                scrollToTopInstant();
                 resetEnergyFeedback();
                 setKcalModalVisibility(true);
                 const focusTarget = proteinsField?.value ? fatsField : proteinsField;
