@@ -6,12 +6,12 @@
     <title>My Croquette Factory - Calculateur de ration pour chien</title>
     <meta property="og:title" content="My Croquette Factory - Calculateur de ration pour chien" />
     <meta property="og:description" content="Calculez la ration journalière idéale de votre chien en fonction de son poids, de ses croquettes et de son profil." />
-    <meta property="og:image" content="cover.jpg" />
+    <meta property="og:image" content="http://benjamin.mur.free.fr/cover.jpg" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="My Croquette Factory - Calculateur de ration pour chien" />
     <meta name="twitter:description" content="Un calculateur simple pour ajuster la ration de croquettes de votre compagnon." />
-    <meta name="twitter:image" content="cover.jpg" />
+    <meta name="twitter:image" content="http://benjamin.mur.free.fr/cover.jpg" />
     <style>
         :root {
             color-scheme: light dark;
@@ -69,13 +69,13 @@
 
         h1 {
             margin: 0 0 12px;
-            font-size: clamp(2rem, 3vw, 2.6rem);
+            font-size: clamp(1.4rem, 2.6vw, 1.9rem);
             letter-spacing: -0.03em;
         }
 
         .brand {
             margin: 0 0 18px;
-            font-size: clamp(2.6rem, 6vw, 3.6rem);
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
             font-weight: 800;
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -306,8 +306,50 @@
             color: var(--text-muted);
         }
 
+        .input-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .input-label-row .input-label {
+            flex: 1;
+        }
+
+        .ghost-link {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+        }
+
+        .ghost-link:hover,
+        .ghost-link:focus-visible {
+            border-color: var(--accent);
+            color: var(--text-primary);
+            background: rgba(255, 179, 68, 0.1);
+            outline: none;
+        }
+
         .select-field {
             position: relative;
+        }
+
+        .select-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: rgba(248, 249, 255, 0.78);
+            letter-spacing: 0.01em;
         }
 
         .select-field select {
@@ -324,6 +366,209 @@
         .select-field select:focus {
             outline: none;
             border-color: rgba(255, 179, 68, 0.7);
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 32px 24px;
+            background: rgba(4, 5, 18, 0.85);
+            backdrop-filter: blur(6px);
+            z-index: 1200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 200ms ease-out;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            width: min(520px, 100%);
+            background: rgba(18, 17, 35, 0.98);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 28px;
+            box-shadow: 0 30px 60px -45px rgba(0, 0, 0, 0.8);
+            position: relative;
+            max-height: calc(100vh - 96px);
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.35rem;
+            letter-spacing: -0.01em;
+        }
+
+        .modal-description {
+            margin: 0 0 20px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .modal-close {
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            font-size: 1rem;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus-visible {
+            background: rgba(255, 179, 68, 0.2);
+            color: var(--accent);
+            outline: none;
+        }
+
+        .modal label {
+            display: block;
+            font-size: 0.85rem;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: rgba(248, 249, 255, 0.8);
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(12, 11, 24, 0.65);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .nec-grid {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .nec-option {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 16px;
+            background: rgba(12, 11, 24, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            cursor: pointer;
+            transition: border-color 150ms ease, transform 150ms ease, background 150ms ease;
+        }
+
+        .nec-option:hover,
+        .nec-option:focus-visible {
+            border-color: rgba(255, 179, 68, 0.8);
+            outline: none;
+            transform: translateY(-2px);
+        }
+
+        .nec-option.is-selected {
+            border-color: var(--accent);
+          background: rgba(255, 179, 68, 0.12);
+        }
+
+        .nec-illustration {
+            width: 100%;
+            height: 90px;
+            border-radius: 16px;
+        }
+
+        .nec-score {
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .nec-caption {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .modal-error {
+            min-height: 1em;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #ff8686;
+        }
+
+        .modal-actions {
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+            bottom: 0;
+            padding-top: 16px;
+            background: linear-gradient(180deg, transparent 0%, rgba(18, 17, 35, 0.98) 40%, rgba(18, 17, 35, 0.98) 100%);
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            border: none;
+        }
+
+        .primary-btn {
+            background: var(--accent);
+            color: #2b1900;
+        }
+
+        .primary-btn:hover,
+        .primary-btn:focus-visible {
+            box-shadow: 0 12px 24px -18px rgba(255, 179, 68, 1);
+            outline: none;
+        }
+
+        .secondary-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+        }
+
+        .secondary-btn:hover,
+        .secondary-btn:focus-visible {
+            border-color: var(--accent);
+            color: var(--accent);
+            outline: none;
         }
 
         .results {
@@ -426,13 +671,22 @@
             }
 
             .brand {
-                font-size: clamp(2.2rem, 8vw, 2.8rem);
+                font-size: clamp(1.8rem, 6vw, 2.2rem);
             }
 
             h1 {
-                font-size: clamp(1.8rem, 6vw, 2.3rem);
+                font-size: clamp(1.3rem, 5vw, 1.7rem);
+            }
+
+            .nec-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .modal {
+                padding: 24px;
             }
         }
+
     </style>
 </head>
 <body>
@@ -440,21 +694,22 @@
     <header>
         <div class="brand">My Croquette Factory</div>
         <h1>Plan de ration pour votre compagnon</h1>
-        <p class="description">
-            Ajustez simplement le poids de votre chien et l'énergie des croquettes. Nous calculons la portion quotidienne idéale
-            pour vous.
-        </p>
     </header>
 
     <section class="inputs" aria-label="Paramètres ajustables">
         <div class="input-group">
-            <label class="input-label" for="dogWeight">
-                <span class="badge">Poids</span>
-                Poids du chien (kg)
-            </label>
+            <div class="input-label-row">
+                <label class="input-label" for="dogWeight">
+                    <span class="badge">Poids</span>
+                    Poids du chien idéal (kg)
+                </label>
+                <button type="button" class="ghost-link" id="openIdealWeightCalc" aria-haspopup="dialog">
+                    Calculatrice du poids idéal
+                </button>
+            </div>
             <div class="number-field">
                 <div class="input-row">
-                    <input type="number" inputmode="decimal" min="0" step="0.1" id="dogWeight" placeholder="Ex. 12.5" />
+                    <input type="number" inputmode="decimal" min="0" step="0.1" id="dogWeight" placeholder="Ex. 12,5" />
                     <span class="unit">kg</span>
                 </div>
                 <div class="spin-controls" aria-hidden="true">
@@ -494,17 +749,23 @@
                 <span class="badge">Profil</span>
                 Métabolisme & activité
             </div>
-            <div class="toggle-group" role="group" aria-label="Profil énergétique du chien">
+            <div class="toggle-group" role="group" aria-label="Profil énergétique du chien - stérilisation">
                 <label class="toggle" for="isSterilized">
                     <input type="checkbox" id="isSterilized" />
-                    <span class="toggle-text">Chien stérilisé</span>
-                </label>
-                <label class="toggle" for="isSporty">
-                    <input type="checkbox" id="isSporty" />
-                    <span class="toggle-text">Chien sportif</span>
+                    <span class="toggle-text">Chien stérilisé (x0,8)</span>
                 </label>
             </div>
-            <p class="helper-text">Les multiplicateurs sont cumulables et ajustent le besoin énergétique de base.</p>
+            <div class="select-field">
+                <label class="select-label" for="activityLevel">Niveau d'activité</label>
+                <select id="activityLevel" aria-label="Niveau d'activité du chien">
+                    <option value="" selected hidden>Sélectionnez un niveau d'activité</option>
+                    <option value="sedentaire">Sédentaire&nbsp;: promenade en laisse &lt;1h/jour (x0,8)</option>
+                    <option value="equilibre">Équilibré&nbsp;: activité quotidienne modérée (x1)</option>
+                    <option value="actif">Actif / sportif&nbsp;: agilité, canicross, VTT, chasse… (x1,2)</option>
+                    <option value="athlete">Athlète&nbsp;: +7h d'activité soutenue / semaine (x1,4)</option>
+                </select>
+            </div>
+            <p class="helper-text">Combinez la stérilisation et la sportivité pour refléter le quotidien de votre chien.</p>
         </div>
 
         <div class="input-group">
@@ -515,10 +776,12 @@
             <div class="select-field">
                 <select id="breedSelect" aria-label="Race du chien">
                     <option value="" selected hidden>Sélectionnez une race</option>
-                    <option value="generic">Autre race</option>
-                    <option value="labrador">Labrador</option>
-                    <option value="beagle">Beagle</option>
-                    <option value="levrier">Lévrier</option>
+                    <option value="generic">Autre race (x1)</option>
+                    <option value="labrador">Labrador (x0,8)</option>
+                    <option value="golden_retriever">Golden retriever (x0,8)</option>
+                    <option value="beagle">Beagle (x0,9)</option>
+                    <option value="dogue_allemand">Dogue allemand (x1,2)</option>
+                    <option value="levrier">Lévrier (x1,2)</option>
                 </select>
             </div>
             <p class="helper-text">Choisissez une race pour prendre en compte les besoins spécifiques.</p>
@@ -537,24 +800,133 @@
     </section>
 </main>
 
+<div class="modal-overlay" id="idealWeightModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="idealWeightTitle" aria-describedby="idealWeightDescription">
+        <div class="modal-header">
+            <h2 class="modal-title" id="idealWeightTitle">Calculatrice du poids idéal</h2>
+            <button type="button" class="modal-close" data-close-modal="idealWeight" aria-label="Fermer la calculatrice">&times;</button>
+        </div>
+        <p class="modal-description" id="idealWeightDescription">
+            Renseignez le poids actuel et choisissez la Note d'État Corporel (NEC) pour estimer rapidement le poids de forme.
+        </p>
+        <form id="idealWeightForm">
+            <label for="currentWeightInput">Poids actuel du chien (kg)</label>
+            <input type="number" inputmode="decimal" min="0" step="0.1" id="currentWeightInput" class="modal-input" placeholder="Ex. 18,2" />
+
+            <div class="nec-grid" role="group" aria-label="Sélectionnez la note d'état corporel">
+                <button type="button" class="nec-option" data-nec="1" aria-pressed="false">
+                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="gradient-nec-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ffd5ef" />
+                                <stop offset="100%" stop-color="#ff9bc1" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-1)"></rect>
+                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#121123" font-weight="700">1</text>
+                    </svg>
+                    <span class="nec-score">NEC 1</span>
+                    <span class="nec-caption">Très maigre</span>
+                </button>
+                <button type="button" class="nec-option" data-nec="3" aria-pressed="false">
+                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="gradient-nec-3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ffe3b4" />
+                                <stop offset="100%" stop-color="#ffb344" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-3)"></rect>
+                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#121123" font-weight="700">3</text>
+                    </svg>
+                    <span class="nec-score">NEC 3</span>
+                    <span class="nec-caption">Maigre</span>
+                </button>
+                <button type="button" class="nec-option" data-nec="5" aria-pressed="false">
+                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="gradient-nec-5" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#d6f5c4" />
+                                <stop offset="100%" stop-color="#8fd694" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-5)"></rect>
+                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#0e3015" font-weight="700">5</text>
+                    </svg>
+                    <span class="nec-score">NEC 5</span>
+                    <span class="nec-caption">Optimal</span>
+                </button>
+                <button type="button" class="nec-option" data-nec="7" aria-pressed="false">
+                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="gradient-nec-7" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ffd5a1" />
+                                <stop offset="100%" stop-color="#ff7b44" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-7)"></rect>
+                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#421003" font-weight="700">7</text>
+                    </svg>
+                    <span class="nec-score">NEC 7</span>
+                    <span class="nec-caption">Gros</span>
+                </button>
+                <button type="button" class="nec-option" data-nec="9" aria-pressed="false">
+                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="gradient-nec-9" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#f8b7ff" />
+                                <stop offset="100%" stop-color="#b084ff" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-9)"></rect>
+                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#260533" font-weight="700">9</text>
+                    </svg>
+                    <span class="nec-score">NEC 9</span>
+                    <span class="nec-caption">Obèse</span>
+                </button>
+            </div>
+            <p class="helper-text" style="margin-top: 16px;">Astuce : demandez à votre vétérinaire de confirmer la note NEC lors des visites de contrôle.</p>
+            <div class="modal-error" id="idealWeightError" role="alert" aria-live="assertive"></div>
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" data-close-modal="idealWeight">Annuler</button>
+                <button type="submit" class="primary-btn">Valider et appliquer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     (function () {
         const STORAGE_KEY = "dogFoodCalculatorPreferences";
         const weightInput = document.getElementById("dogWeight");
         const kcalInput = document.getElementById("kcal100");
         const sterilizedInput = document.getElementById("isSterilized");
-        const sportyInput = document.getElementById("isSporty");
+        const activitySelect = document.getElementById("activityLevel");
         const breedSelect = document.getElementById("breedSelect");
         const resultValue = document.getElementById("resultValue");
         const resultDetails = document.getElementById("resultDetails");
+        const idealWeightButton = document.getElementById("openIdealWeightCalc");
+        const idealWeightModal = document.getElementById("idealWeightModal");
+        const idealWeightForm = document.getElementById("idealWeightForm");
+        const currentWeightField = document.getElementById("currentWeightInput");
+        const necOptionButtons = document.querySelectorAll(".nec-option");
+        const idealWeightError = document.getElementById("idealWeightError");
+        const modalCloseButtons = document.querySelectorAll("[data-close-modal=\"idealWeight\"]");
         const BREED_MODIFIERS = {
             labrador: 0.8,
-            beagle: 0.8,
+            golden_retriever: 0.8,
+            beagle: 0.9,
+            dogue_allemand: 1.2,
             levrier: 1.2,
             generic: 1,
         };
         const STERILIZED_MULTIPLIER = 0.8;
-        const SPORTY_MULTIPLIER = 1.1;
+        const ACTIVITY_MULTIPLIERS = {
+            equilibre: 1,
+            sedentaire: 0.8,
+            actif: 1.2,
+            athlete: 1.4,
+        };
 
         const formatDecimal = (value, digits = 1) =>
             Number.isFinite(value) ? value.toLocaleString("fr-FR", { minimumFractionDigits: digits, maximumFractionDigits: digits }) : "—";
@@ -562,7 +934,8 @@
         const getLifestyleModifier = () => {
             let modifier = 1;
             if (sterilizedInput.checked) modifier *= STERILIZED_MULTIPLIER;
-            if (sportyInput.checked) modifier *= SPORTY_MULTIPLIER;
+            const activityModifier = ACTIVITY_MULTIPLIERS[activitySelect.value] ?? 1;
+            modifier *= activityModifier;
             const breedModifier = BREED_MODIFIERS[breedSelect.value] ?? 1;
             return modifier * breedModifier;
         };
@@ -571,11 +944,16 @@
             try {
                 const saved = localStorage.getItem(STORAGE_KEY);
                 if (!saved) return;
-                const { weight, kcals, isSterilized, isSporty, breed } = JSON.parse(saved);
+                const { weight, kcals, isSterilized, activityLevel, isSporty, breed } = JSON.parse(saved);
                 if (typeof weight === "number" && Number.isFinite(weight)) weightInput.value = weight;
                 if (typeof kcals === "number" && Number.isFinite(kcals)) kcalInput.value = kcals;
                 if (typeof isSterilized === "boolean") sterilizedInput.checked = isSterilized;
-                if (typeof isSporty === "boolean") sportyInput.checked = isSporty;
+                if (typeof activityLevel === "string") {
+                    const hasActivityOption = Array.from(activitySelect.options).some((option) => option.value === activityLevel);
+                    activitySelect.value = hasActivityOption ? activityLevel : "";
+                } else if (typeof isSporty === "boolean" && isSporty) {
+                    activitySelect.value = "actif";
+                }
                 if (typeof breed === "string") {
                     const hasOption = Array.from(breedSelect.options).some((option) => option.value === breed);
                     breedSelect.value = hasOption ? breed : "";
@@ -595,7 +973,7 @@
                         weight,
                         kcals,
                         isSterilized: sterilizedInput.checked,
-                        isSporty: sportyInput.checked,
+                        activityLevel: activitySelect.value || "",
                         breed: breedSelect.value || "",
                     })
                 );
@@ -637,6 +1015,88 @@
             renderResult();
         };
 
+        if (idealWeightButton && idealWeightModal && idealWeightForm && currentWeightField) {
+            let selectedNecValue = "";
+
+            const setModalVisibility = (isOpen) => {
+                idealWeightModal.classList.toggle("is-open", isOpen);
+                idealWeightModal.setAttribute("aria-hidden", isOpen ? "false" : "true");
+                document.body.classList.toggle("modal-open", isOpen);
+            };
+
+            const updateNecSelection = () => {
+                necOptionButtons.forEach((button) => {
+                    const isActive = button.dataset.nec === selectedNecValue;
+                    button.classList.toggle("is-selected", isActive);
+                    button.setAttribute("aria-pressed", isActive ? "true" : "false");
+                });
+            };
+
+            const openIdealWeightModal = () => {
+                selectedNecValue = "";
+                updateNecSelection();
+                idealWeightError.textContent = "";
+                currentWeightField.value = weightInput.value || "";
+                setModalVisibility(true);
+                setTimeout(() => currentWeightField.focus(), 50);
+            };
+
+            const closeIdealWeightModal = () => {
+                setModalVisibility(false);
+                idealWeightError.textContent = "";
+                selectedNecValue = "";
+                updateNecSelection();
+            };
+
+            const handleNecSelection = (value) => {
+                selectedNecValue = selectedNecValue === value ? "" : value;
+                updateNecSelection();
+            };
+
+            const handleIdealWeightSubmit = (event) => {
+                event.preventDefault();
+                idealWeightError.textContent = "";
+                const currentWeight = parseFloat(currentWeightField.value);
+                if (!Number.isFinite(currentWeight) || currentWeight <= 0) {
+                    idealWeightError.textContent = "Veuillez renseigner un poids actuel valide.";
+                    return;
+                }
+                if (!selectedNecValue) {
+                    idealWeightError.textContent = "Sélectionnez la note d'état corporel pour continuer.";
+                    return;
+                }
+                const necScore = Number(selectedNecValue);
+                const idealWeight =
+                    (currentWeight * 100) / (100 + (necScore - 5) * 10);
+                if (!Number.isFinite(idealWeight) || idealWeight <= 0) {
+                    idealWeightError.textContent = "Le calcul a échoué. Vérifiez les valeurs saisies.";
+                    return;
+                }
+                weightInput.value = idealWeight.toFixed(1);
+                handleInput();
+                closeIdealWeightModal();
+            };
+
+            idealWeightButton.addEventListener("click", openIdealWeightModal);
+            modalCloseButtons.forEach((button) => {
+                button.addEventListener("click", closeIdealWeightModal);
+            });
+            necOptionButtons.forEach((button) => {
+                button.addEventListener("click", () => handleNecSelection(button.dataset.nec));
+            });
+            idealWeightForm.addEventListener("submit", handleIdealWeightSubmit);
+            idealWeightModal.addEventListener("click", (event) => {
+                if (event.target === idealWeightModal) {
+                    closeIdealWeightModal();
+                }
+            });
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && idealWeightModal.classList.contains("is-open")) {
+                    closeIdealWeightModal();
+                }
+            });
+        }
+
         const attachSpinControls = (input) => {
             const container = input.closest(".number-field");
             if (!container) return;
@@ -659,7 +1119,7 @@
         weightInput.addEventListener("input", handleInput);
         kcalInput.addEventListener("input", handleInput);
         sterilizedInput.addEventListener("input", handleInput);
-        sportyInput.addEventListener("input", handleInput);
+        activitySelect.addEventListener("change", handleInput);
         breedSelect.addEventListener("change", handleInput);
         attachSpinControls(weightInput);
         attachSpinControls(kcalInput);
