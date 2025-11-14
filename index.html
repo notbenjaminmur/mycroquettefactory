@@ -145,7 +145,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 14px;
+            gap: 6px;
             inline-size: fit-content;
             max-inline-size: 100%;
             width: 100%;
@@ -193,6 +193,12 @@
             margin: 0;
         }
 
+        .modal-input::-webkit-inner-spin-button,
+        .modal-input::-webkit-outer-spin-button {
+            appearance: none;
+            margin: 0;
+        }
+
         .spin-controls {
             display: inline-flex;
             align-self: flex-start;
@@ -200,11 +206,13 @@
             justify-content: center;
             align-items: center;
             gap: 8px;
-            padding: 6px 10px;
+            padding: 6px 12px;
+            margin-top: 6px;
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.06);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .spin-btn {
@@ -550,6 +558,22 @@
             border-color: rgba(255, 179, 68, 0.8);
             outline: none;
             transform: translateY(-2px);
+        }
+
+        .modal-number-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .modal-number-field .spin-controls {
+            align-self: flex-start;
+            padding: 4px 10px;
+        }
+
+        .modal-number-field .spin-btn {
+            width: 32px;
+            height: 26px;
         }
 
         .nec-option.is-selected {
@@ -924,7 +948,17 @@
         </p>
         <form id="idealWeightForm">
             <label for="currentWeightInput">Poids actuel du chien (kg)</label>
-            <input type="number" inputmode="decimal" min="0" step="0.1" id="currentWeightInput" class="modal-input" placeholder="Ex. 18,2" />
+            <div class="modal-number-field">
+                <input type="number" inputmode="decimal" min="0" step="0.1" id="currentWeightInput" class="modal-input" placeholder="Ex. 18,2" />
+                <div class="spin-controls" aria-hidden="true">
+                    <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter le poids actuel">
+                        <span class="spin-icon up"></span>
+                    </button>
+                    <button type="button" class="spin-btn" data-action="down" aria-label="Diminuer le poids actuel">
+                        <span class="spin-icon down"></span>
+                    </button>
+                </div>
+            </div>
 
             <div class="nec-grid" role="group" aria-label="Sélectionnez la note d'état corporel">
                 <button type="button" class="nec-option" data-nec="1" aria-pressed="false">
@@ -971,27 +1005,87 @@
             <div class="form-grid two-columns" style="margin-top: 18px;">
                 <div>
                     <label for="energyHumidity">Humidité (%)</label>
-                    <input type="number" id="energyHumidity" class="modal-input" name="humidity" min="0" max="100" step="0.1" placeholder="Laisser vide si inconnue" />
+                    <div class="modal-number-field">
+                        <input type="number" id="energyHumidity" class="modal-input" name="humidity" min="0" max="100" step="0.1" placeholder="Laisser vide si inconnue" />
+                        <div class="spin-controls" aria-hidden="true">
+                            <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter l'humidité déclarée">
+                                <span class="spin-icon up"></span>
+                            </button>
+                            <button type="button" class="spin-btn" data-action="down" aria-label="Diminuer l'humidité déclarée">
+                                <span class="spin-icon down"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <label for="energyProteins">Protéines brutes (%)</label>
-                    <input type="number" id="energyProteins" class="modal-input" name="proteins" min="0" max="100" step="0.1" required />
+                    <div class="modal-number-field">
+                        <input type="number" id="energyProteins" class="modal-input" name="proteins" min="0" max="100" step="0.1" required />
+                        <div class="spin-controls" aria-hidden="true">
+                            <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter les protéines">
+                                <span class="spin-icon up"></span>
+                            </button>
+                            <button type="button" class="spin-btn" data-action="down" aria-label="Diminuer les protéines">
+                                <span class="spin-icon down"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <label for="energyFats">Lipides / matières gr.&nbsp;(%)</label>
-                    <input type="number" id="energyFats" class="modal-input" name="fats" min="0" max="100" step="0.1" required />
+                    <div class="modal-number-field">
+                        <input type="number" id="energyFats" class="modal-input" name="fats" min="0" max="100" step="0.1" required />
+                        <div class="spin-controls" aria-hidden="true">
+                            <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter les lipides">
+                                <span class="spin-icon up"></span>
+                            </button>
+                            <button type="button" class="spin-btn" data-action="down" aria-label="Diminuer les lipides">
+                                <span class="spin-icon down"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <label for="energyAsh">Cendres / minéraux (%)</label>
-                    <input type="number" id="energyAsh" class="modal-input" name="ash" min="0" max="100" step="0.1" required />
+                    <div class="modal-number-field">
+                        <input type="number" id="energyAsh" class="modal-input" name="ash" min="0" max="100" step="0.1" required />
+                        <div class="spin-controls" aria-hidden="true">
+                            <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter les cendres">
+                                <span class="spin-icon up"></span>
+                            </button>
+                            <button type="button" class="spin-btn" data-action="down" aria-label="Diminuer les cendres">
+                                <span class="spin-icon down"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <label for="energyFiber">Cellulose brute (%)</label>
-                    <input type="number" id="energyFiber" class="modal-input" name="fiber" min="0" max="100" step="0.1" required />
+                    <div class="modal-number-field">
+                        <input type="number" id="energyFiber" class="modal-input" name="fiber" min="0" max="100" step="0.1" required />
+                        <div class="spin-controls" aria-hidden="true">
+                            <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter la cellulose brute">
+                                <span class="spin-icon up"></span>
+                            </button>
+                            <button type="button" class="spin-btn" data-action="down" aria-label="Diminuer la cellulose brute">
+                                <span class="spin-icon down"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <label for="energyTotalFiber">Fibres totales (%)</label>
-                    <input type="number" id="energyTotalFiber" class="modal-input" name="tdf" min="0" max="100" step="0.1" placeholder="Facultatif si non connu" />
+                    <div class="modal-number-field">
+                        <input type="number" id="energyTotalFiber" class="modal-input" name="tdf" min="0" max="100" step="0.1" placeholder="Facultatif si non connu" />
+                        <div class="spin-controls" aria-hidden="true">
+                            <button type="button" class="spin-btn" data-action="up" aria-label="Augmenter les fibres totales">
+                                <span class="spin-icon up"></span>
+                            </button>
+                            <button type="button" class="spin-btn" data-action="down" aria-label="Diminuer les fibres totales">
+                                <span class="spin-icon down"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1431,7 +1525,8 @@
         }
 
         const attachSpinControls = (input) => {
-            const container = input.closest(".number-field");
+            if (!input) return;
+            const container = input.closest(".number-field, .modal-number-field");
             if (!container) return;
             const controls = container.querySelectorAll(".spin-btn");
             controls.forEach((btn) => {
@@ -1461,6 +1556,13 @@
         breedSelect.addEventListener("change", handleInput);
         attachSpinControls(weightInput);
         attachSpinControls(kcalInput);
+        attachSpinControls(currentWeightField);
+        attachSpinControls(humidityField);
+        attachSpinControls(proteinsField);
+        attachSpinControls(fatsField);
+        attachSpinControls(ashField);
+        attachSpinControls(celluloseField);
+        attachSpinControls(totalFiberField);
     })();
 </script>
 </body>
