@@ -339,6 +339,57 @@
             outline: none;
         }
 
+        .calc-results {
+            margin-top: 16px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .calc-results[hidden] {
+            display: none;
+        }
+
+        .calc-result-title {
+            margin: 0 0 10px;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(248, 249, 255, 0.7);
+        }
+
+        .calc-result-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .calc-result-line strong {
+            font-size: 1.1rem;
+            color: var(--accent);
+        }
+
+        .calc-note {
+            margin: 12px 0 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .form-grid.two-columns {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+
         .select-field {
             position: relative;
         }
@@ -507,10 +558,11 @@
             width: 100%;
             height: 110px;
             border-radius: 12px;
-            object-fit: contain;
+            /*object-fit: contain;*/
             display: block;
             background: rgba(255, 255, 255, 0.08);
             padding: 4px;
+            border-radius: 15px;
         }
 
         .nec-score {
@@ -642,6 +694,10 @@
             .results {
                 padding: 24px 24px;
             }
+
+            .form-grid.two-columns {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 460px) {
@@ -736,10 +792,15 @@
         </div>
 
         <div class="input-group">
-            <label class="input-label" for="kcal100">
-                <span class="badge">Énergie</span>
-                Croquettes
-            </label>
+            <div class="input-label-row">
+                <label class="input-label" for="kcal100">
+                    <span class="badge">Énergie</span>
+                    Croquettes
+                </label>
+                <button type="button" class="ghost-link" id="openKcalCalculator" aria-haspopup="dialog">
+                    Calculatrice d'énergie
+                </button>
+            </div>
             <div class="number-field">
                 <div class="input-row">
                     <input type="number" inputmode="decimal" min="0" step="1" id="kcal100" placeholder="Ex. 380" />
@@ -753,6 +814,18 @@
                         <span class="spin-icon down"></span>
                     </button>
                 </div>
+            </div>
+            <div class="calc-results" id="kcalCalculatorSummary" hidden>
+                <p class="calc-result-title">Calcul NRC2006</p>
+                <div class="calc-result-line" id="kcalSummaryCfRow">
+                    <span>Énergie (cellulose brute)</span>
+                    <strong id="kcalSummaryCf">—</strong>
+                </div>
+                <div class="calc-result-line" id="kcalSummaryTdfRow" hidden>
+                    <span>Énergie (fibres totales)</span>
+                    <strong id="kcalSummaryTdf">—</strong>
+                </div>
+                <p class="calc-note" id="kcalSummaryNote"></p>
             </div>
         </div>
 
@@ -862,6 +935,56 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="kcalCalculatorModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="kcalCalculatorTitle" aria-describedby="kcalCalculatorDescription">
+        <div class="modal-header">
+            <h2 class="modal-title" id="kcalCalculatorTitle">Calculatrice d'énergie (NRC2006)</h2>
+            <button type="button" class="modal-close" data-close-modal="kcalCalculator" aria-label="Fermer la calculatrice">&times;</button>
+        </div>
+        <p class="modal-description" id="kcalCalculatorDescription">
+            Entrez les constituants analytiques pour estimer l'énergie métabolisable de vos croquettes pour chien (kcal / 100 g).
+        </p>
+        <form id="kcalCalculatorForm" novalidate>
+            <div class="form-grid two-columns" style="margin-top: 18px;">
+                <div>
+                    <label for="energyHumidity">Humidité (%)</label>
+                    <input type="number" id="energyHumidity" class="modal-input" name="humidity" min="0" max="100" step="0.1" placeholder="Laisser vide si inconnue" />
+                </div>
+                <div>
+                    <label for="energyProteins">Protéines brutes (%)</label>
+                    <input type="number" id="energyProteins" class="modal-input" name="proteins" min="0" max="100" step="0.1" required />
+                </div>
+                <div>
+                    <label for="energyFats">Lipides / matières gr.&nbsp;(%)</label>
+                    <input type="number" id="energyFats" class="modal-input" name="fats" min="0" max="100" step="0.1" required />
+                </div>
+                <div>
+                    <label for="energyAsh">Cendres / minéraux (%)</label>
+                    <input type="number" id="energyAsh" class="modal-input" name="ash" min="0" max="100" step="0.1" required />
+                </div>
+                <div>
+                    <label for="energyFiber">Cellulose brute (%)</label>
+                    <input type="number" id="energyFiber" class="modal-input" name="fiber" min="0" max="100" step="0.1" required />
+                </div>
+                <div>
+                    <label for="energyTotalFiber">Fibres totales (%)</label>
+                    <input type="number" id="energyTotalFiber" class="modal-input" name="tdf" min="0" max="100" step="0.1" placeholder="Facultatif si non connu" />
+                </div>
+            </div>
+
+            <p class="helper-text" style="margin-top: 16px;">
+                Si l'humidité n'est pas renseignée, la calculatrice appliquera par défaut 8&nbsp;% (valeur standard pour les croquettes chien).
+            </p>
+
+            <div class="modal-error" id="kcalCalculatorError" role="alert" aria-live="assertive"></div>
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" data-close-modal="kcalCalculator">Fermer</button>
+                <button type="submit" class="primary-btn">Valider et appliquer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     (function () {
         const STORAGE_KEY = "dogFoodCalculatorPreferences";
@@ -879,6 +1002,35 @@
         const necOptionButtons = document.querySelectorAll(".nec-option");
         const idealWeightError = document.getElementById("idealWeightError");
         const modalCloseButtons = document.querySelectorAll("[data-close-modal=\"idealWeight\"]");
+        const kcalModalCloseButtons = document.querySelectorAll("[data-close-modal=\"kcalCalculator\"]");
+        const kcalCalculatorButton = document.getElementById("openKcalCalculator");
+        const kcalCalculatorModal = document.getElementById("kcalCalculatorModal");
+        const kcalCalculatorForm = document.getElementById("kcalCalculatorForm");
+        const kcalCalculatorError = document.getElementById("kcalCalculatorError");
+        const humidityField = document.getElementById("energyHumidity");
+        const proteinsField = document.getElementById("energyProteins");
+        const fatsField = document.getElementById("energyFats");
+        const ashField = document.getElementById("energyAsh");
+        const celluloseField = document.getElementById("energyFiber");
+        const totalFiberField = document.getElementById("energyTotalFiber");
+        const kcalSummary = document.getElementById("kcalCalculatorSummary");
+        const kcalSummaryCfRow = document.getElementById("kcalSummaryCfRow");
+        const kcalSummaryCfValue = document.getElementById("kcalSummaryCf");
+        const kcalSummaryTdfRow = document.getElementById("kcalSummaryTdfRow");
+        const kcalSummaryTdfValue = document.getElementById("kcalSummaryTdf");
+        const kcalSummaryNote = document.getElementById("kcalSummaryNote");
+        const clearEnergySummary = () => {
+            if (!kcalSummary) return;
+            kcalSummary.hidden = true;
+            if (kcalSummaryCfValue) kcalSummaryCfValue.textContent = "—";
+            if (kcalSummaryTdfValue) kcalSummaryTdfValue.textContent = "—";
+            if (kcalSummaryTdfRow) kcalSummaryTdfRow.hidden = true;
+            if (kcalSummaryNote) kcalSummaryNote.textContent = "";
+        };
+        const syncBodyModalState = () => {
+            const openModal = document.querySelector(".modal-overlay.is-open");
+            document.body.classList.toggle("modal-open", Boolean(openModal));
+        };
         const BREED_MODIFIERS = {
             labrador: 0.8,
             golden_retriever: 0.8,
@@ -988,7 +1140,7 @@
             const setModalVisibility = (isOpen) => {
                 idealWeightModal.classList.toggle("is-open", isOpen);
                 idealWeightModal.setAttribute("aria-hidden", isOpen ? "false" : "true");
-                document.body.classList.toggle("modal-open", isOpen);
+                syncBodyModalState();
             };
 
             const updateNecSelection = () => {
@@ -1064,6 +1216,182 @@
             });
         }
 
+        if (kcalCalculatorButton && kcalCalculatorModal && kcalCalculatorForm) {
+            const DEFAULT_HUMIDITY = 8;
+            const DOG_COEFFS = {
+                cf: { a: 91.2, b: 1.43, c: 1.04 },
+                tdf: { a: 96.6, b: 0.95, c: 1.04 },
+            };
+
+            const setKcalModalVisibility = (isOpen) => {
+                kcalCalculatorModal.classList.toggle("is-open", isOpen);
+                kcalCalculatorModal.setAttribute("aria-hidden", isOpen ? "false" : "true");
+                syncBodyModalState();
+            };
+
+            const parseNumberValue = (input) => {
+                if (!input) return null;
+                const raw = String(input.value ?? "").replace(",", ".").trim();
+                if (raw === "") return null;
+                const parsed = Number.parseFloat(raw);
+                return Number.isFinite(parsed) ? parsed : null;
+            };
+
+            const resetEnergyFeedback = () => {
+                kcalCalculatorError.textContent = "";
+            };
+
+            const gatherEnergyData = () => {
+                const proteins = parseNumberValue(proteinsField);
+                const fats = parseNumberValue(fatsField);
+                const ash = parseNumberValue(ashField);
+                const cellulose = parseNumberValue(celluloseField);
+                if (![proteins, fats, ash, cellulose].every((value) => Number.isFinite(value))) {
+                    kcalCalculatorError.textContent = "Merci de renseigner tous les champs obligatoires.";
+                    return null;
+                }
+
+                const humidityInput = parseNumberValue(humidityField);
+                const humidity = Number.isFinite(humidityInput) ? humidityInput : DEFAULT_HUMIDITY;
+                if (!(humidity >= 0 && humidity < 100)) {
+                    kcalCalculatorError.textContent = "L'humidité doit être comprise entre 0 et 100 % (hors 100).";
+                    return null;
+                }
+
+                const fibresTotales = parseNumberValue(totalFiberField);
+                const ENA = 100 - (proteins + fats + ash + cellulose + humidity);
+                if (ENA < 0) {
+                    kcalCalculatorError.textContent = "La somme des constituants dépasse 100 %. Vérifiez vos valeurs.";
+                    return null;
+                }
+
+                const DMfactor = 100 / (100 - humidity);
+                return {
+                    proteins,
+                    fats,
+                    ash,
+                    cellulose,
+                    fibresTotales,
+                    humidity,
+                    hasCustomHumidity: Number.isFinite(humidityInput),
+                    ENA,
+                    DMfactor,
+                };
+            };
+
+            const computeEnergyValue = (data, useTdf = false) => {
+                if (!data) return null;
+                const coeff = DOG_COEFFS[useTdf ? "tdf" : "cf"];
+                if (!coeff) return null;
+                const fiberValue = useTdf ? data.fibresTotales : data.cellulose;
+                if (useTdf && !Number.isFinite(fiberValue)) {
+                    return null;
+                }
+                const energieBrute = 5.7 * data.proteins + 9.4 * data.fats + 4.1 * (data.cellulose + data.ENA);
+                const digestibilite = (coeff.a - coeff.b * fiberValue * data.DMfactor) / 100;
+                const energieDigestible = energieBrute * digestibilite;
+                const energieMetabolisable = energieDigestible - coeff.c * data.proteins;
+                const rounded = Math.round(energieMetabolisable);
+                return Number.isFinite(rounded) ? rounded : null;
+            };
+
+            const openKcalCalculator = () => {
+                resetEnergyFeedback();
+                setKcalModalVisibility(true);
+                const focusTarget = proteinsField?.value ? fatsField : proteinsField;
+                setTimeout(() => focusTarget?.focus(), 50);
+            };
+
+            const closeKcalCalculator = () => {
+                setKcalModalVisibility(false);
+            };
+
+            const handleKcalCalculatorSubmit = (event) => {
+                event.preventDefault();
+                kcalCalculatorError.textContent = "";
+                if (!kcalCalculatorForm.checkValidity()) {
+                    kcalCalculatorForm.reportValidity();
+                    return;
+                }
+                const data = gatherEnergyData();
+                if (!data) return;
+
+                const energyCf = computeEnergyValue(data, false);
+                if (!Number.isFinite(energyCf)) {
+                    kcalCalculatorError.textContent = "Impossible de calculer l'énergie avec ces valeurs.";
+                    return;
+                }
+                const energyTdf = computeEnergyValue(data, true);
+                const celluloseDry = data.cellulose * data.DMfactor;
+                const preferTdf = Number.isFinite(energyTdf) && celluloseDry > 8;
+                const appliedEnergy = preferTdf && Number.isFinite(energyTdf) ? energyTdf : energyCf;
+
+                if (!Number.isFinite(appliedEnergy)) {
+                    kcalCalculatorError.textContent = "Impossible d'appliquer le calcul avec ces valeurs.";
+                    return;
+                }
+
+                clearEnergySummary();
+                if (kcalSummary && kcalSummaryNote && kcalSummaryCfValue) {
+                    const noteParts = [];
+                    if (Number.isFinite(energyTdf)) {
+                        noteParts.push(
+                            preferTdf
+                                ? "Cellulose brute sur matière sèche ≥ 8 %, usage de la formule basée sur les fibres totales."
+                                : "Cellulose brute sur matière sèche < 8 %, usage de la formule cellulose brute."
+                        );
+                    } else {
+                        noteParts.push("Fibres totales non renseignées : calcul via la formule cellulose brute.");
+                    }
+                    if (!data.hasCustomHumidity) {
+                        noteParts.push(
+                            `Humidité estimée automatiquement à ${data.humidity.toLocaleString("fr-FR", {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 1,
+                            })} %.`
+                        );
+                    }
+                    kcalSummary.hidden = false;
+                    if (kcalSummaryCfRow) {
+                        kcalSummaryCfRow.hidden = false;
+                    }
+                    kcalSummaryCfValue.textContent = `${energyCf.toLocaleString("fr-FR")} kcal/100 g`;
+                    if (kcalSummaryTdfValue && kcalSummaryTdfRow) {
+                        if (Number.isFinite(energyTdf)) {
+                            kcalSummaryTdfRow.hidden = false;
+                            kcalSummaryTdfValue.textContent = `${energyTdf.toLocaleString("fr-FR")} kcal/100 g`;
+                        } else {
+                            kcalSummaryTdfRow.hidden = true;
+                        }
+                    }
+                    noteParts.push(`Valeur injectée : ${appliedEnergy.toLocaleString("fr-FR")} kcal/100 g.`);
+                    kcalSummary.hidden = false;
+                    kcalSummaryNote.textContent = noteParts.join(" ");
+                }
+
+                kcalInput.value = appliedEnergy;
+                handleInput();
+                closeKcalCalculator();
+            };
+
+            kcalCalculatorButton.addEventListener("click", openKcalCalculator);
+            kcalModalCloseButtons.forEach((button) => button.addEventListener("click", closeKcalCalculator));
+            kcalCalculatorForm.addEventListener("submit", handleKcalCalculatorSubmit);
+            kcalCalculatorForm.addEventListener("input", () => {
+                resetEnergyFeedback();
+            });
+            kcalCalculatorModal.addEventListener("click", (event) => {
+                if (event.target === kcalCalculatorModal) {
+                    closeKcalCalculator();
+                }
+            });
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && kcalCalculatorModal.classList.contains("is-open")) {
+                    closeKcalCalculator();
+                }
+            });
+        }
+
         const attachSpinControls = (input) => {
             const container = input.closest(".number-field");
             if (!container) return;
@@ -1084,7 +1412,12 @@
         renderResult();
 
         weightInput.addEventListener("input", handleInput);
-        kcalInput.addEventListener("input", handleInput);
+        kcalInput.addEventListener("input", (event) => {
+            if (event && event.isTrusted) {
+                clearEnergySummary();
+            }
+            handleInput(event);
+        });
         sterilizedInput.addEventListener("input", handleInput);
         activitySelect.addEventListener("change", handleInput);
         breedSelect.addEventListener("change", handleInput);
