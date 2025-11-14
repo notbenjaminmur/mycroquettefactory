@@ -1,4 +1,4 @@
-# My Dog Food Factory
+# My Croquette Factory
 
 Une application web élégante et autonome pour calculer la portion quotidienne de croquettes à donner à votre chien.
 
