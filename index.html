@@ -473,21 +473,22 @@
         .nec-grid {
             margin-top: 18px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
         }
 
         .nec-option {
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 16px;
-            background: rgba(12, 11, 24, 0.5);
+            border-radius: 16px;
+            padding: 10px;
+            background: rgba(12, 11, 24, 0.45);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
             cursor: pointer;
             transition: border-color 150ms ease, transform 150ms ease, background 150ms ease;
+            overflow: hidden;
         }
 
         .nec-option:hover,
@@ -504,18 +505,25 @@
 
         .nec-illustration {
             width: 100%;
-            height: 90px;
-            border-radius: 16px;
+            height: 110px;
+            border-radius: 12px;
+            object-fit: contain;
+            display: block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px;
         }
 
         .nec-score {
             font-weight: 700;
             letter-spacing: 0.02em;
+            color: rgba(248, 249, 255, 0.95);
+            font-size: 0.95rem;
         }
 
         .nec-caption {
-            font-size: 0.9rem;
-            color: var(--text-muted);
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-weight: 600;
             text-align: center;
         }
 
@@ -682,6 +690,10 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
+            .nec-illustration {
+                height: 90px;
+            }
+
             .modal {
                 padding: 24px;
             }
@@ -701,7 +713,7 @@
             <div class="input-label-row">
                 <label class="input-label" for="dogWeight">
                     <span class="badge">Poids</span>
-                    Poids du chien idéal (kg)
+                    Poids du chien idéal
                 </label>
                 <button type="button" class="ghost-link" id="openIdealWeightCalc" aria-haspopup="dialog">
                     Calculatrice du poids idéal
@@ -726,7 +738,7 @@
         <div class="input-group">
             <label class="input-label" for="kcal100">
                 <span class="badge">Énergie</span>
-                Croquettes (kcal pour 100 g)
+                Croquettes
             </label>
             <div class="number-field">
                 <div class="input-row">
@@ -815,72 +827,27 @@
 
             <div class="nec-grid" role="group" aria-label="Sélectionnez la note d'état corporel">
                 <button type="button" class="nec-option" data-nec="1" aria-pressed="false">
-                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="gradient-nec-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#ffd5ef" />
-                                <stop offset="100%" stop-color="#ff9bc1" />
-                            </linearGradient>
-                        </defs>
-                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-1)"></rect>
-                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#121123" font-weight="700">1</text>
-                    </svg>
+                    <img src="nec1.jpg" class="nec-illustration" alt="Illustration NEC 1 - très maigre" loading="lazy" />
                     <span class="nec-score">NEC 1</span>
                     <span class="nec-caption">Très maigre</span>
                 </button>
                 <button type="button" class="nec-option" data-nec="3" aria-pressed="false">
-                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="gradient-nec-3" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#ffe3b4" />
-                                <stop offset="100%" stop-color="#ffb344" />
-                            </linearGradient>
-                        </defs>
-                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-3)"></rect>
-                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#121123" font-weight="700">3</text>
-                    </svg>
+                    <img src="nec3.jpg" class="nec-illustration" alt="Illustration NEC 3 - maigre" loading="lazy" />
                     <span class="nec-score">NEC 3</span>
                     <span class="nec-caption">Maigre</span>
                 </button>
                 <button type="button" class="nec-option" data-nec="5" aria-pressed="false">
-                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="gradient-nec-5" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#d6f5c4" />
-                                <stop offset="100%" stop-color="#8fd694" />
-                            </linearGradient>
-                        </defs>
-                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-5)"></rect>
-                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#0e3015" font-weight="700">5</text>
-                    </svg>
+                    <img src="nec5.jpg" class="nec-illustration" alt="Illustration NEC 5 - optimal" loading="lazy" />
                     <span class="nec-score">NEC 5</span>
                     <span class="nec-caption">Optimal</span>
                 </button>
                 <button type="button" class="nec-option" data-nec="7" aria-pressed="false">
-                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="gradient-nec-7" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#ffd5a1" />
-                                <stop offset="100%" stop-color="#ff7b44" />
-                            </linearGradient>
-                        </defs>
-                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-7)"></rect>
-                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#421003" font-weight="700">7</text>
-                    </svg>
+                    <img src="nec7.jpg" class="nec-illustration" alt="Illustration NEC 7 - gros" loading="lazy" />
                     <span class="nec-score">NEC 7</span>
                     <span class="nec-caption">Gros</span>
                 </button>
                 <button type="button" class="nec-option" data-nec="9" aria-pressed="false">
-                    <svg viewBox="0 0 120 120" class="nec-illustration" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="gradient-nec-9" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#f8b7ff" />
-                                <stop offset="100%" stop-color="#b084ff" />
-                            </linearGradient>
-                        </defs>
-                        <rect width="120" height="120" rx="18" fill="url(#gradient-nec-9)"></rect>
-                        <text x="50%" y="58%" text-anchor="middle" font-size="48" fill="#260533" font-weight="700">9</text>
-                    </svg>
+                    <img src="nec9.jpg" class="nec-illustration" alt="Illustration NEC 9 - obèse" loading="lazy" />
                     <span class="nec-score">NEC 9</span>
                     <span class="nec-caption">Obèse</span>
                 </button>
