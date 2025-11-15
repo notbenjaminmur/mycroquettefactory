@@ -551,6 +551,8 @@
             cursor: pointer;
             transition: border-color 150ms ease, transform 150ms ease, background 150ms ease;
             overflow: hidden;
+            justify-self: center;
+            min-width: 150px;
         }
 
         .nec-option:hover,
@@ -578,7 +580,8 @@
 
         .nec-option.is-selected {
             border-color: var(--accent);
-            background: rgba(255, 179, 68, 0.12);
+            box-shadow: 0 0 0 3px rgba(255, 179, 68, 0.45), 0 24px 35px -16px rgba(255, 179, 68, 0.45);
+            transform: translateY(-5px) scale(1.03);
         }
 
         .nec-option[data-nec="1"] {
@@ -792,10 +795,6 @@
 
             h1 {
                 font-size: clamp(1.3rem, 5vw, 1.7rem);
-            }
-
-            .nec-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
             .nec-illustration {
